@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Boredom Busters - 60 Second Activities for Kids</title>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/recharts@2.8.0/umd/Recharts.js"></script>
+    
+    <!-- Meta tags for sharing -->
+    <meta name="description" content="Help kids redirect from unhealthy boredom habits with fun 60-second activities. A micro-intervention tool for healthy dopamine hits.">
+    <meta name="keywords" content="kids activities, boredom busters, healthy habits, mindfulness, physical activity, creativity">
+    <meta property="og:title" content="Boredom Busters - 60 Second Activities">
+    <meta property="og:description" content="Fun activities to help kids redirect from mindless snacking and screen time">
+    <meta property="og:type" content="website">
+    
+    <style>
+        /* Custom animations */
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        @keyframes bounce {
+            0%, 20%, 53%, 80%, 100% {
+                transform: translate3d(0,0,0);
+            }
+            40%, 43% {
+                transform: translate3d(0,-10px,0);
+            }
+            70% {
+                transform: translate3d(0,-5px,0);
+            }
+            90% {
+                transform: translate3d(0,-2px,0);
+            }
+        }
+        
+        .animate-spin {
+            animation: spin 2s linear infinite;
+        }
+        
+        .animate-bounce {
+            animation: bounce 1s infinite;
+        }
+        
+        /* Custom gradients */
+        .gradient-bg {
+            background: linear-gradient(135deg, #e0f2f7 0%, #b3e5fc 50%, #81c784 100%);
+        }
+    </style>
+</head>
+<body class="gradient-bg min-h-screen">
+    <!-- GitHub Corner -->
+    <a href="https://github.com/yourusername/boredom-busters" class="github-corner" aria-label="View source on GitHub">
+        <svg width="80" height="80" viewBox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true">
+            <path d="m0,0 0,250 250,250 0,-250 z"></path>
+            <path d="m127.5,220 c-25,-10 -41.5,-25 -41.5,-46.5 0,-33.5 26.5,-60 60,-60 33.5,0 60,26.5 60,60 0,21.5 -16.5,36.5 -41.5,46.5 -20,8 -57,8 -77,0 z" fill="#fff"></path>
+        </svg>
+    </a>
+
+    <!-- Header -->
+    <header class="text-center py-8">
+        <h1 class="text-4xl font-bold text-gray-800 mb-2">🎯 Boredom Busters</h1>
+        <p class="text-lg text-gray-600 max-w-2xl mx-auto px-4">
+            Help kids redirect from unhealthy boredom habits with fun 60-second activities. 
+            A micro-intervention tool designed for children aged 6-12.
+        </p>
+    </header>
+
+    <!-- Main App Container -->
+    <div id="boredom-busters-app"></div>
+
+    <!-- Footer -->
+    <footer class="text-center py-8 mt-12">
+        <div class="max-w-4xl mx-auto px-4">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">📊 For Developers & Researchers</h2>
+            <div class="bg-white/80 rounded-xl p-6 mb-6">
+                <h3 class="text-lg font-semibold mb-3">Want to track analytics across multiple sites?</h3>
+                <p class="text-gray-600 mb-4">
+                    This widget can send usage data to your centralized dashboard for research purposes.
+                    Perfect for schools, health organizations, and parenting apps.
+                </p>
+                <div class="bg-gray-100 rounded-lg p-4 text-left">
+                    <h4 class="font-medium mb-2">Quick Integration:</h4>
+                    <code class="text-sm block mb-2">
+                        &lt;script src="https://yourusername.github.io/boredom-busters/widget.js"&gt;&lt;/script&gt;
+                    </code>
+                    <code class="text-sm block">
+                        &lt;div id="boredom-busters" data-api-key="your_site_key"&gt;&lt;/div&gt;
+                    </code>
+                </div>
+            </div>
+            
+            <div class="grid md:grid-cols-3 gap-6 text-sm">
+                <div class="bg-white/60 rounded-lg p-4">
+                    <h4 class="font-semibold text-gray-800 mb-2">🔬 Research Ready</h4>
+                    <p class="text-gray-600">Tracks effectiveness metrics, usage patterns, and behavioral outcomes for academic research.</p>
+                </div>
+                <div class="bg-white/60 rounded-lg p-4">
+                    <h4 class="font-semibold text-gray-800 mb-2">🏫 School Friendly</h4>
+                    <p class="text-gray-600">Designed for classroom use with age-appropriate activities and privacy protection.</p>
+                </div>
+                <div class="bg-white/60 rounded-lg p-4">
+                    <h4 class="font-semibold text-gray-800 mb-2">📱 Mobile Optimized</h4>
+                    <p class="text-gray-600">Works perfectly on tablets and smartphones with touch-friendly controls.</p>
+                </div>
+            </div>
+            
+            <p class="text-gray-500 mt-6">
+                Made with ❤️ for healthier kids. 
+                <a href="https://github.com/yourusername/boredom-busters" class="text-blue-600 hover:underline">View on GitHub</a>
+            </p>
+        </div>
+    </footer>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+        const { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, PieChart, Pie, Cell } = Recharts;
+
+        // Configuration for analytics tracking
+        const ANALYTICS_CONFIG = {
+            enabled: true,
+            endpoint: 'https://your-api.com/api/boredom-busters/events',
+            apiKey: 'github_demo_site'
+        };
+
+        const BoredomBusters = () => {
+            const [currentTab, setCurrentTab] = useState('app');
+            const [currentScreen, setCurrentScreen] = useState('spin');
+            const [selectedActivity, setSelectedActivity] = useState(null);
+            const [timeLeft, setTimeLeft] = useState(60);
+            const [isTimerActive, setIsTimerActive] = useState(false);
+            const [streak, setStreak] = useState(0);
+            const [lumoCoins, setLumoCoins] = useState(0);
+            const [isSpinning, setIsSpinning] = useState(false);
+            const [analyticsData, setAnalyticsData] = useState(null);
+            const [userId] = useState(() => {
+                let id = localStorage.getItem('bb_user_id');
+                if (!id) {
+                    id = 'user_' + Math.random().toString(36).substr(2, 9);
+                    localStorage.setItem('bb_user_id', id);
+                }
+                return id;
+            });
+
+            const activities = {
+                "Move It!": [
+                    "Turn up your favorite song and dance like no one is watching!",
+                    "Waddle like a penguin, hop like a bunny, and crawl like a bear across the room.",
+                    "Strike three different superhero poses, holding each for 20 seconds!",
+                    "Do as many jumping jacks as you can until the timer runs out.",
+                    "Blow up a balloon and try to keep it from touching the ground.",
+                    "Jump rope with an imaginary rope for one whole minute!"
+                ],
+                "Create It!": [
+                    "Draw a funny picture of Lumo. Only 60 seconds to get it done!",
+                    "Grab a piece of paper and write down the first three sentences of a crazy story.",
+                    "Fold a paper airplane and give it a test flight.",
+                    "Make three different funny faces in a mirror.",
+                    "Build the tallest tower you can with blocks, Legos, or any objects you can find.",
+                    "Create a work of art on the fridge with magnetic letters and numbers."
+                ],
+                "Calm It!": [
+                    "Imagine your belly is a balloon. Breathe in slowly to make it bigger, and breathe out slowly to make it smaller.",
+                    "Name one thing you can see, hear, smell, feel, and taste right now.",
+                    "Trace a simple maze on a piece of paper or on your screen with your finger, focusing only on the lines.",
+                    "Stand by a window. Quietly look at three things you see and listen for three things you hear.",
+                    "Take a small sip of water. Really focus on how it feels in your mouth and as you swallow it.",
+                    "Close your eyes and hum a gentle, quiet tune for the whole minute."
+                ]
+            };
+
+            const categoryColors = {
+                "Move It!": "bg-gradient-to-r from-orange-400 to-red-500",
+                "Create It!": "bg-gradient-to-r from-purple-400 to-pink-500",
+                "Calm It!": "bg-gradient-to-r from-blue-400 to-teal-500"
+            };
+
+            useEffect(() => {
+                loadUserData();
+                loadAnalyticsData();
+            }, []);
+
+            useEffect(() => {
+                let interval = null;
+                if (isTimerActive && timeLeft > 0) {
+                    interval = setInterval(() => {
+                        setTimeLeft(time => time - 1);
+                    }, 1000);
+                } else if (timeLeft === 0) {
+                    setIsTimerActive(false);
+                    setCurrentScreen('reflection');
+                }
+                return () => clearInterval(interval);
+            }, [isTimerActive, timeLeft]);
+
+            const loadUserData = () => {
+                const savedStreak = localStorage.getItem('boredomBusters_streak');
+                const savedCoins = localStorage.getItem('boredomBusters_coins');
+                
+                if (savedStreak) setStreak(parseInt(savedStreak));
+                if (savedCoins) setLumoCoins(parseInt(savedCoins));
+            };
+
+            const saveUserData = () => {
+                localStorage.setItem('boredomBusters_streak', streak.toString());
+                localStorage.setItem('boredomBusters_coins', lumoCoins.toString());
+            };
+
+            const loadAnalyticsData = () => {
+                const savedAnalytics = localStorage.getItem('boredomBusters_analytics');
+                if (savedAnalytics) {
+                    setAnalyticsData(JSON.parse(savedAnalytics));
+                } else {
+                    const initialData = {
+                        totalSpins: 0,
+                        totalCompletions: 0,
+                        dailyUsage: [],
+                        categoryBreakdown: { "Move It!": 0, "Create It!": 0, "Calm It!": 0 },
+                        feelingResponses: { "😐": 0, "😊": 0, "😃": 0 },
+                        snackReductions: 0,
+                        totalSnackCravings: 0,
+                        activities: [],
+                        hourlyPattern: Array.from({length: 24}, (_, i) => ({hour: i, count: 0}))
+                    };
+                    setAnalyticsData(initialData);
+                    localStorage.setItem('boredomBusters_analytics', JSON.stringify(initialData));
+                }
+            };
+
+            const trackEvent = async (eventType, data = {}) => {
+                const currentAnalytics = JSON.parse(localStorage.getItem('boredomBusters_analytics') || '{}');
+                const now = new Date();
+                const today = now.toISOString().split('T')[0];
+                const hour = now.getHours();
+
+                // Update local analytics
+                switch (eventType) {
+                    case 'spin':
+                        currentAnalytics.totalSpins = (currentAnalytics.totalSpins || 0) + 1;
+                        if (!currentAnalytics.dailyUsage) currentAnalytics.dailyUsage = [];
+                        const todayUsage = currentAnalytics.dailyUsage.find(day => day.date === today);
+                        if (todayUsage) {
+                            todayUsage.spins += 1;
+                        } else {
+                            currentAnalytics.dailyUsage.push({date: today, spins: 1, completions: 0, redirections: 0});
+                        }
+                        if (currentAnalytics.hourlyPattern && currentAnalytics.hourlyPattern[hour]) {
+                            currentAnalytics.hourlyPattern[hour].count += 1;
+                        }
+                        break;
+
+                    case 'completion':
+                        currentAnalytics.totalCompletions = (currentAnalytics.totalCompletions || 0) + 1;
+                        currentAnalytics.categoryBreakdown[data.category] = (currentAnalytics.categoryBreakdown[data.category] || 0) + 1;
+                        const todayComplete = currentAnalytics.dailyUsage.find(day => day.date === today);
+                        if (todayComplete) {
+                            todayComplete.completions += 1;
+                        }
+                        if (!currentAnalytics.activities) currentAnalytics.activities = [];
+                        currentAnalytics.activities.push({
+                            activity: data.activity,
+                            category: data.category,
+                            date: today,
+                            timestamp: now.toISOString()
+                        });
+                        break;
+
+                    case 'reflection':
+                        currentAnalytics.feelingResponses[data.feeling] = (currentAnalytics.feelingResponses[data.feeling] || 0) + 1;
+                        currentAnalytics.totalSnackCravings = (currentAnalytics.totalSnackCravings || 0) + 1;
+                        
+                        if (!data.stillWantSnack) {
+                            currentAnalytics.snackReductions = (currentAnalytics.snackReductions || 0) + 1;
+                            const todayRedirect = currentAnalytics.dailyUsage.find(day => day.date === today);
+                            if (todayRedirect) {
+                                todayRedirect.redirections += 1;
+                            }
+                        }
+                        break;
+                }
+
+                localStorage.setItem('boredomBusters_analytics', JSON.stringify(currentAnalytics));
+                setAnalyticsData(currentAnalytics);
+
+                // Send to external API if configured
+                if (ANALYTICS_CONFIG.enabled) {
+                    try {
+                        const eventPayload = {
+                            userId: userId,
+                            eventType: eventType,
+                            timestamp: now.toISOString(),
+                            website: window.location.hostname,
+                            data: data
+                        };
+
+                        // In a real implementation, this would send to your API
+                        console.log('Analytics Event:', eventPayload);
+                        
+                        // You would uncomment this for real tracking:
+                        /*
+                        await fetch(ANALYTICS_CONFIG.endpoint, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-API-Key': ANALYTICS_CONFIG.apiKey
+                            },
+                            body: JSON.stringify(eventPayload)
+                        });
+                        */
+                    } catch (error) {
+                        console.log('Analytics tracking failed:', error);
+                    }
+                }
+            };
+
+            const spinForActivity = () => {
+                setIsSpinning(true);
+                trackEvent('spin');
+                
+                setTimeout(() => {
+                    const categories = Object.keys(activities);
+                    const randomCategory = categories[Math.floor(Math.random() * categories.length)];
+                    const categoryActivities = activities[randomCategory];
+                    const randomActivity = categoryActivities[Math.floor(Math.random() * categoryActivities.length)];
+                    
+                    setSelectedActivity({
+                        category: randomCategory,
+                        description: randomActivity
+                    });
+                    setIsSpinning(false);
+                    setCurrentScreen('activity');
+                    setTimeLeft(60);
+                }, 2000);
+            };
+
+            const startTimer = () => {
+                setIsTimerActive(true);
+            };
+
+            const handleReflection = (feeling, stillWantSnack) => {
+                trackEvent('completion', {
+                    category: selectedActivity.category,
+                    activity: selectedActivity.description.split('.')[0]
+                });
+                
+                trackEvent('reflection', { feeling, stillWantSnack });
+
+                if (feeling === '😃' && !stillWantSnack) {
+                    setStreak(prev => prev + 1);
+                    setLumoCoins(prev => prev + 10);
+                }
+                
+                saveUserData();
+                setCurrentScreen('reward');
+            };
+
+            const resetToSpin = () => {
+                setCurrentScreen('spin');
+                setSelectedActivity(null);
+                setTimeLeft(60);
+                setIsTimerActive(false);
+            };
+
+            const LumoCharacter = ({ pose = "default" }) => (
+                <div className="flex justify-center mb-6">
+                    <div className="relative">
+                        <div className={`w-24 h-24 rounded-full bg-gradient-to-br from-green-400 to-teal-500 flex items-center justify-center transition-transform duration-300 ${pose === "excited" ? "animate-bounce" : ""}`}>
+                            <div className="text-4xl">🐉</div>
+                        </div>
+                    </div>
+                </div>
+            );
+
+            const SpinScreen = () => (
+                <div className="text-center">
+                    <LumoCharacter />
+                    <h1 className="text-3xl font-bold text-gray-800 mb-4">Boredom Busters</h1>
+                    <p className="text-lg text-gray-600 mb-8">Feeling bored? Let's find you a fun 60-second activity!</p>
+                    
+                    <div className="mb-8">
+                        <div className={`mx-auto w-48 h-48 rounded-full border-8 border-gray-300 flex items-center justify-center transition-transform duration-2000 ${isSpinning ? 'animate-spin' : ''}`}>
+                            {isSpinning ? (
+                                <div className="text-center">
+                                    <div className="text-2xl">🎯</div>
+                                    <p className="text-sm font-semibold text-gray-700">Spinning...</p>
+                                </div>
+                            ) : (
+                                <div className="text-center">
+                                    <div className="text-4xl mb-2">🎲</div>
+                                    <p className="text-sm font-semibold text-gray-700">Ready to spin!</p>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+
+                    <button
+                        onClick={spinForActivity}
+                        disabled={isSpinning}
+                        className="bg-gradient-to-r from-teal-400 to-blue-500 text-white font-bold py-4 px-8 rounded-full text-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 disabled:opacity-50"
+                    >
+                        {isSpinning ? "Spinning..." : "Spin for a Dopamine Hit! 🎯"}
+                    </button>
+
+                    <div className="mt-8 flex justify-center space-x-4">
+                        <div className="text-center">
+                            <div className="text-2xl">🔥</div>
+                            <p className="text-sm text-gray-600">Streak: {streak}</p>
+                        </div>
+                        <div className="text-center">
+                            <div className="text-2xl">🪙</div>
+                            <p className="text-sm text-gray-600">Coins: {lumoCoins}</p>
+                        </div>
+                    </div>
+                </div>
+            );
+
+            const ActivityScreen = () => (
+                <div className="text-center">
+                    <LumoCharacter pose="excited" />
+                    
+                    <div className={`inline-block px-6 py-2 rounded-full text-white font-bold mb-6 ${categoryColors[selectedActivity.category]}`}>
+                        {selectedActivity.category}
+                    </div>
+                    
+                    <div className="bg-white rounded-3xl p-6 shadow-lg mb-8">
+                        <p className="text-lg text-gray-800 leading-relaxed">
+                            {selectedActivity.description}
+                        </p>
+                    </div>
+
+                    <div className="mb-8">
+                        <div className="relative w-32 h-32 mx-auto">
+                            <div className="absolute inset-0 rounded-full bg-gradient-to-r from-teal-400 to-blue-500"></div>
+                            <div className="absolute inset-2 rounded-full bg-white flex items-center justify-center">
+                                <span className="text-3xl font-bold text-gray-800">{timeLeft}</span>
+                            </div>
+                        </div>
+                        <div className="w-full bg-gray-200 rounded-full h-3 mt-4">
+                            <div 
+                                className="bg-gradient-to-r from-green-400 to-blue-500 h-3 rounded-full transition-all duration-1000"
+                                style={{ width: `${((60 - timeLeft) / 60) * 100}%` }}
+                            ></div>
+                        </div>
+                    </div>
+
+                    {!isTimerActive ? (
+                        <button
+                            onClick={startTimer}
+                            className="bg-gradient-to-r from-green-400 to-blue-500 text-white font-bold py-4 px-8 rounded-full text-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
+                        >
+                            Start Your 60-Second Challenge! 🚀
+                        </button>
+                    ) : (
+                        <div className="text-center">
+                            <p className="text-lg text-gray-600 mb-4">You've got this! Keep going! 💪</p>
+                            <div className="animate-bounce text-2xl">🎉</div>
+                        </div>
+                    )}
+                </div>
+            );
+
+            const ReflectionScreen = () => {
+                const [feeling, setFeeling] = useState('');
+                const [stillWantSnack, setStillWantSnack] = useState(null);
+
+                return (
+                    <div className="text-center">
+                        <LumoCharacter />
+                        
+                        <h2 className="text-2xl font-bold text-gray-800 mb-6">Awesome job! 🎉</h2>
+                        
+                        <div className="bg-white rounded-3xl p-6 shadow-lg mb-6">
+                            <h3 className="text-lg font-semibold text-gray-800 mb-4">How do you feel now?</h3>
+                            <div className="flex justify-center space-x-4">
+                                {['😐', '😊', '😃'].map((emoji) => (
+                                    <button
+                                        key={emoji}
+                                        onClick={() => setFeeling(emoji)}
+                                        className={`text-4xl p-3 rounded-full transition-all duration-200 ${
+                                            feeling === emoji ? 'bg-yellow-200 scale-110' : 'hover:bg-gray-100'
+                                        }`}
+                                    >
+                                        {emoji}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+
+                        <div className="bg-white rounded-3xl p-6 shadow-lg mb-8">
+                            <h3 className="text-lg font-semibold text-gray-800 mb-4">Still want the snack?</h3>
+                            <div className="flex justify-center space-x-4">
+                                <button
+                                    onClick={() => setStillWantSnack(true)}
+                                    className={`px-6 py-3 rounded-full font-semibold transition-all duration-200 ${
+                                        stillWantSnack === true 
+                                            ? 'bg-red-200 text-red-800' 
+                                            : 'bg-gray-100 text-gray-700 hover:bg-red-100'
+                                    }`}
+                                >
+                                    Yes
+                                </button>
+                                <button
+                                    onClick={() => setStillWantSnack(false)}
+                                    className={`px-6 py-3 rounded-full font-semibold transition-all duration-200 ${
+                                        stillWantSnack === false 
+                                            ? 'bg-green-200 text-green-800' 
+                                            : 'bg-gray-100 text-gray-700 hover:bg-green-100'
+                                    }`}
+                                >
+                                    No
+                                </button>
+                            </div>
+                        </div>
+
+                        {feeling && stillWantSnack !== null && (
+                            <button
+                                onClick={() => handleReflection(feeling, stillWantSnack)}
+                                className="bg-gradient-to-r from-purple-400 to-pink-500 text-white font-bold py-4 px-8 rounded-full text-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
+                            >
+                                Continue 🌟
+                            </button>
+                        )}
+                    </div>
+                );
+            };
+
+            const RewardScreen = () => (
+                <div className="text-center">
+                    <LumoCharacter pose="excited" />
+                    
+                    <h2 className="text-3xl font-bold text-gray-800 mb-6">Great job! 🎉</h2>
+                    
+                    <div className="bg-gradient-to-r from-yellow-200 to-orange-200 rounded-3xl p-6 shadow-lg mb-8">
+                        <div className="text-6xl mb-4">🏆</div>
+                        <h3 className="text-xl font-bold text-gray-800 mb-2">Boredom Buster Complete!</h3>
+                        <p className="text-gray-700">You earned 10 Lumo coins!</p>
+                    </div>
+
+                    <div className="flex justify-center space-x-8 mb-8">
+                        <div className="text-center">
+                            <div className="text-4xl mb-2">🔥</div>
+                            <p className="text-lg font-semibold text-gray-700">Streak</p>
+                            <p className="text-2xl font-bold text-orange-500">{streak}</p>
+                        </div>
+                        <div className="text-center">
+                            <div className="text-4xl mb-2">🪙</div>
+                            <p className="text-lg font-semibold text-gray-700">Total Coins</p>
+                            <p className="text-2xl font-bold text-yellow-500">{lumoCoins}</p>
+                        </div>
+                    </div>
+
+                    <button
+                        onClick={resetToSpin}
+                        className="bg-gradient-to-r from-teal-400 to-blue-500 text-white font-bold py-4 px-8 rounded-full text-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
+                    >
+                        Try Another Boredom Buster! 🎯
+                    </button>
+                </div>
+            );
+
+            // Simple Dashboard for GitHub demo
+            const Dashboard = () => {
+                if (!analyticsData) return <div className="p-8 text-center">Loading analytics...</div>;
+
+                const completionRate = analyticsData.totalSpins > 0 
+                    ? ((analyticsData.totalCompletions / analyticsData.totalSpins) * 100).toFixed(1)
+                    : 0;
+
+                const snackReductionRate = analyticsData.totalSnackCravings > 0
+                    ? ((analyticsData.snackReductions / analyticsData.totalSnackCravings) * 100).toFixed(1)
+                    : 0;
+
+                return (
+                    <div className="p-6 bg-gray-50 min-h-screen">
+                        <div className="max-w-4xl mx-auto">
+                            <h2 className="text-2xl font-bold text-gray-900 mb-6">📊 Your Analytics</h2>
+                            
+                            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                                <div className="bg-white rounded-lg p-4 shadow">
+                                    <div className="text-2xl text-red-600 font-bold">{streak}</div>
+                                    <div className="text-sm text-gray-600">Current Streak</div>
+                                </div>
+                            </div>
+
+                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                                <div className="bg-white rounded-lg p-4 shadow">
+                                    <h3 className="font-semibold mb-3">Activity Categories</h3>
+                                    <div className="space-y-2">
+                                        {Object.entries(analyticsData.categoryBreakdown || {}).map(([category, count]) => (
+                                            <div key={category} className="flex justify-between">
+                                                <span className="text-sm">{category}</span>
+                                                <span className="text-sm font-bold">{count}</span>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                                
+                                <div className="bg-white rounded-lg p-4 shadow">
+                                    <h3 className="font-semibold mb-3">Feeling Responses</h3>
+                                    <div className="space-y-2">
+                                        {Object.entries(analyticsData.feelingResponses || {}).map(([feeling, count]) => (
+                                            <div key={feeling} className="flex justify-between">
+                                                <span className="text-sm">{feeling}</span>
+                                                <span className="text-sm font-bold">{count}</span>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="mt-6 bg-blue-50 rounded-lg p-4">
+                                <h4 className="font-semibold text-blue-900 mb-2">💾 Data Storage</h4>
+                                <p className="text-sm text-blue-800">
+                                    All data is stored locally in your browser. For multi-site analytics, 
+                                    configure the ANALYTICS_CONFIG to send data to your centralized dashboard.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                );
+            };
+
+            return (
+                <div className="min-h-screen">
+                    <div className="bg-white shadow-sm border-b border-gray-200">
+                        <div className="max-w-md mx-auto flex">
+                            <button
+                                onClick={() => setCurrentTab('app')}
+                                className={`flex-1 py-3 px-4 text-center font-semibold transition-all duration-200 ${
+                                    currentTab === 'app' 
+                                        ? 'bg-blue-500 text-white' 
+                                        : 'text-gray-600 hover:text-blue-500'
+                                }`}
+                            >
+                                🎯 Boredom Busters
+                            </button>
+                            <button
+                                onClick={() => setCurrentTab('dashboard')}
+                                className={`flex-1 py-3 px-4 text-center font-semibold transition-all duration-200 ${
+                                    currentTab === 'dashboard' 
+                                        ? 'bg-blue-500 text-white' 
+                                        : 'text-gray-600 hover:text-blue-500'
+                                }`}
+                            >
+                                📊 Analytics
+                            </button>
+                        </div>
+                    </div>
+
+                    {currentTab === 'app' ? (
+                        <div className="p-4">
+                            <div className="max-w-md mx-auto bg-white/90 backdrop-blur-sm rounded-3xl shadow-xl p-8 min-h-[500px] flex flex-col justify-center">
+                                {currentScreen === 'spin' && <SpinScreen />}
+                                {currentScreen === 'activity' && <ActivityScreen />}
+                                {currentScreen === 'reflection' && <ReflectionScreen />}
+                                {currentScreen === 'reward' && <RewardScreen />}
+                            </div>
+                        </div>
+                    ) : (
+                        <Dashboard />
+                    )}
+                </div>
+            );
+        };
+
+        // Render the app
+        ReactDOM.render(<BoredomBusters />, document.getElementById('boredom-busters-app'));
+    </script>
+</body>
+</html>d-lg p-4 shadow">
+                                    <div className="text-2xl text-blue-600 font-bold">{analyticsData.totalSpins || 0}</div>
+                                    <div className="text-sm text-gray-600">Total Spins</div>
+                                </div>
+                                <div className="bg-white rounded-lg p-4 shadow">
+                                    <div className="text-2xl text-green-600 font-bold">{completionRate}%</div>
+                                    <div className="text-sm text-gray-600">Completion Rate</div>
+                                </div>
+                                <div className="bg-white rounded-lg p-4 shadow">
+                                    <div className="text-2xl text-orange-600 font-bold">{snackReductionRate}%</div>
+                                    <div className="text-sm text-gray-600">Snack Reduction</div>
+                                </div>
+                                <div className="bg-white rounde
