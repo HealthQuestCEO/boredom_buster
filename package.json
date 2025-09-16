@@ -1,0 +1,40 @@
+{
+  "name": "boredom-busters",
+  "version": "1.0.0",
+  "description": "A micro-intervention tool to help children redirect from unhealthy boredom habits with fun 60-second activities",
+  "main": "index.html",
+  "scripts": {
+    "start": "python -m http.server 8000",
+    "deploy": "gh-pages -d .",
+    "test": "echo \"No tests specified\" && exit 0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yourusername/boredom-busters.git"
+  },
+  "keywords": [
+    "kids",
+    "health",
+    "boredom",
+    "activities",
+    "mindfulness",
+    "intervention",
+    "child-development",
+    "education",
+    "wellness"
+  ],
+  "author": "Your Name <your-email@example.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/yourusername/boredom-busters/issues"
+  },
+  "homepage": "https://yourusername.github.io/boredom-busters/",
+  "devDependencies": {
+    "gh-pages": "^4.0.0"
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead"
+  ]
+}
