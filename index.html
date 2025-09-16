@@ -4,11 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Boredom Busters - 60 Second Activities for Kids</title>
-    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/recharts@2.8.0/umd/Recharts.js"></script>
     
     <!-- Meta tags for sharing -->
     <meta name="description" content="Help kids redirect from unhealthy boredom habits with fun 60-second activities. A micro-intervention tool for healthy dopamine hits.">
@@ -18,7 +17,19 @@
     <meta property="og:type" content="website">
     
     <style>
-        /* Custom animations */
+        /* Custom animations and styles */
+        .gradient-bg {
+            background: linear-gradient(135deg, #e0f2f7 0%, #b3e5fc 50%, #81c784 100%);
+        }
+        
+        .spinner-animation {
+            animation: spin 2s linear infinite;
+        }
+        
+        .bounce-animation {
+            animation: bounce 0.6s infinite alternate;
+        }
+        
         @keyframes spin {
             from { transform: rotate(0deg); }
             to { transform: rotate(360deg); }
@@ -38,24 +49,11 @@
                 transform: translate3d(0,-2px,0);
             }
         }
-        
-        .animate-spin {
-            animation: spin 2s linear infinite;
-        }
-        
-        .animate-bounce {
-            animation: bounce 1s infinite;
-        }
-        
-        /* Custom gradients */
-        .gradient-bg {
-            background: linear-gradient(135deg, #e0f2f7 0%, #b3e5fc 50%, #81c784 100%);
-        }
     </style>
 </head>
 <body class="gradient-bg min-h-screen">
     <!-- GitHub Corner -->
-    <a href="https://github.com/yourusername/boredom-busters" class="github-corner" aria-label="View source on GitHub">
+    <a href="https://github.com/yourusername/boredom-busters" class="fixed top-0 right-0 z-50" aria-label="View source on GitHub">
         <svg width="80" height="80" viewBox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true">
             <path d="m0,0 0,250 250,250 0,-250 z"></path>
             <path d="m127.5,220 c-25,-10 -41.5,-25 -41.5,-46.5 0,-33.5 26.5,-60 60,-60 33.5,0 60,26.5 60,60 0,21.5 -16.5,36.5 -41.5,46.5 -20,8 -57,8 -77,0 z" fill="#fff"></path>
@@ -119,7 +117,6 @@
 
     <script type="text/babel">
         const { useState, useEffect } = React;
-        const { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, PieChart, Pie, Cell } = Recharts;
 
         // Configuration for analytics tracking
         const ANALYTICS_CONFIG = {
@@ -138,6 +135,8 @@
             const [lumoCoins, setLumoCoins] = useState(0);
             const [isSpinning, setIsSpinning] = useState(false);
             const [analyticsData, setAnalyticsData] = useState(null);
+
+            // Generate user ID
             const [userId] = useState(() => {
                 let id = localStorage.getItem('bb_user_id');
                 if (!id) {
@@ -175,9 +174,9 @@
             };
 
             const categoryColors = {
-                "Move It!": "bg-gradient-to-r from-orange-400 to-red-500",
-                "Create It!": "bg-gradient-to-r from-purple-400 to-pink-500",
-                "Calm It!": "bg-gradient-to-r from-blue-400 to-teal-500"
+                "Move It!": "from-orange-400 to-red-500",
+                "Create It!": "from-purple-400 to-pink-500",
+                "Calm It!": "from-blue-400 to-teal-500"
             };
 
             useEffect(() => {
@@ -185,6 +184,7 @@
                 loadAnalyticsData();
             }, []);
 
+            // Timer effect
             useEffect(() => {
                 let interval = null;
                 if (isTimerActive && timeLeft > 0) {
@@ -224,8 +224,7 @@
                         feelingResponses: { "😐": 0, "😊": 0, "😃": 0 },
                         snackReductions: 0,
                         totalSnackCravings: 0,
-                        activities: [],
-                        hourlyPattern: Array.from({length: 24}, (_, i) => ({hour: i, count: 0}))
+                        activities: []
                     };
                     setAnalyticsData(initialData);
                     localStorage.setItem('boredomBusters_analytics', JSON.stringify(initialData));
@@ -236,7 +235,6 @@
                 const currentAnalytics = JSON.parse(localStorage.getItem('boredomBusters_analytics') || '{}');
                 const now = new Date();
                 const today = now.toISOString().split('T')[0];
-                const hour = now.getHours();
 
                 // Update local analytics
                 switch (eventType) {
@@ -248,9 +246,6 @@
                             todayUsage.spins += 1;
                         } else {
                             currentAnalytics.dailyUsage.push({date: today, spins: 1, completions: 0, redirections: 0});
-                        }
-                        if (currentAnalytics.hourlyPattern && currentAnalytics.hourlyPattern[hour]) {
-                            currentAnalytics.hourlyPattern[hour].count += 1;
                         }
                         break;
 
@@ -301,17 +296,6 @@
                         // In a real implementation, this would send to your API
                         console.log('Analytics Event:', eventPayload);
                         
-                        // You would uncomment this for real tracking:
-                        /*
-                        await fetch(ANALYTICS_CONFIG.endpoint, {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'X-API-Key': ANALYTICS_CONFIG.apiKey
-                            },
-                            body: JSON.stringify(eventPayload)
-                        });
-                        */
                     } catch (error) {
                         console.log('Analytics tracking failed:', error);
                     }
@@ -369,7 +353,7 @@
             const LumoCharacter = ({ pose = "default" }) => (
                 <div className="flex justify-center mb-6">
                     <div className="relative">
-                        <div className={`w-24 h-24 rounded-full bg-gradient-to-br from-green-400 to-teal-500 flex items-center justify-center transition-transform duration-300 ${pose === "excited" ? "animate-bounce" : ""}`}>
+                        <div className={`w-24 h-24 rounded-full bg-gradient-to-br from-green-400 to-teal-500 flex items-center justify-center transition-transform duration-300 ${pose === "excited" ? "bounce-animation" : ""}`}>
                             <div className="text-4xl">🐉</div>
                         </div>
                     </div>
@@ -383,7 +367,7 @@
                     <p className="text-lg text-gray-600 mb-8">Feeling bored? Let's find you a fun 60-second activity!</p>
                     
                     <div className="mb-8">
-                        <div className={`mx-auto w-48 h-48 rounded-full border-8 border-gray-300 flex items-center justify-center transition-transform duration-2000 ${isSpinning ? 'animate-spin' : ''}`}>
+                        <div className={`mx-auto w-48 h-48 rounded-full border-8 border-gray-300 flex items-center justify-center transition-transform duration-2000 ${isSpinning ? 'spinner-animation' : ''}`}>
                             {isSpinning ? (
                                 <div className="text-center">
                                     <div className="text-2xl">🎯</div>
@@ -423,7 +407,7 @@
                 <div className="text-center">
                     <LumoCharacter pose="excited" />
                     
-                    <div className={`inline-block px-6 py-2 rounded-full text-white font-bold mb-6 ${categoryColors[selectedActivity.category]}`}>
+                    <div className={`inline-block px-6 py-2 rounded-full text-white font-bold mb-6 bg-gradient-to-r ${categoryColors[selectedActivity.category]}`}>
                         {selectedActivity.category}
                     </div>
                     
@@ -458,7 +442,7 @@
                     ) : (
                         <div className="text-center">
                             <p className="text-lg text-gray-600 mb-4">You've got this! Keep going! 💪</p>
-                            <div className="animate-bounce text-2xl">🎉</div>
+                            <div className="bounce-animation text-2xl">🎉</div>
                         </div>
                     )}
                 </div>
@@ -582,6 +566,18 @@
                             
                             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
                                 <div className="bg-white rounded-lg p-4 shadow">
+                                    <div className="text-2xl text-blue-600 font-bold">{analyticsData.totalSpins || 0}</div>
+                                    <div className="text-sm text-gray-600">Total Spins</div>
+                                </div>
+                                <div className="bg-white rounded-lg p-4 shadow">
+                                    <div className="text-2xl text-green-600 font-bold">{completionRate}%</div>
+                                    <div className="text-sm text-gray-600">Completion Rate</div>
+                                </div>
+                                <div className="bg-white rounded-lg p-4 shadow">
+                                    <div className="text-2xl text-orange-600 font-bold">{snackReductionRate}%</div>
+                                    <div className="text-sm text-gray-600">Snack Reduction</div>
+                                </div>
+                                <div className="bg-white rounded-lg p-4 shadow">
                                     <div className="text-2xl text-red-600 font-bold">{streak}</div>
                                     <div className="text-sm text-gray-600">Current Streak</div>
                                 </div>
@@ -603,85 +599,3 @@
                                 <div className="bg-white rounded-lg p-4 shadow">
                                     <h3 className="font-semibold mb-3">Feeling Responses</h3>
                                     <div className="space-y-2">
-                                        {Object.entries(analyticsData.feelingResponses || {}).map(([feeling, count]) => (
-                                            <div key={feeling} className="flex justify-between">
-                                                <span className="text-sm">{feeling}</span>
-                                                <span className="text-sm font-bold">{count}</span>
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div className="mt-6 bg-blue-50 rounded-lg p-4">
-                                <h4 className="font-semibold text-blue-900 mb-2">💾 Data Storage</h4>
-                                <p className="text-sm text-blue-800">
-                                    All data is stored locally in your browser. For multi-site analytics, 
-                                    configure the ANALYTICS_CONFIG to send data to your centralized dashboard.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                );
-            };
-
-            return (
-                <div className="min-h-screen">
-                    <div className="bg-white shadow-sm border-b border-gray-200">
-                        <div className="max-w-md mx-auto flex">
-                            <button
-                                onClick={() => setCurrentTab('app')}
-                                className={`flex-1 py-3 px-4 text-center font-semibold transition-all duration-200 ${
-                                    currentTab === 'app' 
-                                        ? 'bg-blue-500 text-white' 
-                                        : 'text-gray-600 hover:text-blue-500'
-                                }`}
-                            >
-                                🎯 Boredom Busters
-                            </button>
-                            <button
-                                onClick={() => setCurrentTab('dashboard')}
-                                className={`flex-1 py-3 px-4 text-center font-semibold transition-all duration-200 ${
-                                    currentTab === 'dashboard' 
-                                        ? 'bg-blue-500 text-white' 
-                                        : 'text-gray-600 hover:text-blue-500'
-                                }`}
-                            >
-                                📊 Analytics
-                            </button>
-                        </div>
-                    </div>
-
-                    {currentTab === 'app' ? (
-                        <div className="p-4">
-                            <div className="max-w-md mx-auto bg-white/90 backdrop-blur-sm rounded-3xl shadow-xl p-8 min-h-[500px] flex flex-col justify-center">
-                                {currentScreen === 'spin' && <SpinScreen />}
-                                {currentScreen === 'activity' && <ActivityScreen />}
-                                {currentScreen === 'reflection' && <ReflectionScreen />}
-                                {currentScreen === 'reward' && <RewardScreen />}
-                            </div>
-                        </div>
-                    ) : (
-                        <Dashboard />
-                    )}
-                </div>
-            );
-        };
-
-        // Render the app
-        ReactDOM.render(<BoredomBusters />, document.getElementById('boredom-busters-app'));
-    </script>
-</body>
-</html>d-lg p-4 shadow">
-                                    <div className="text-2xl text-blue-600 font-bold">{analyticsData.totalSpins || 0}</div>
-                                    <div className="text-sm text-gray-600">Total Spins</div>
-                                </div>
-                                <div className="bg-white rounded-lg p-4 shadow">
-                                    <div className="text-2xl text-green-600 font-bold">{completionRate}%</div>
-                                    <div className="text-sm text-gray-600">Completion Rate</div>
-                                </div>
-                                <div className="bg-white rounded-lg p-4 shadow">
-                                    <div className="text-2xl text-orange-600 font-bold">{snackReductionRate}%</div>
-                                    <div className="text-sm text-gray-600">Snack Reduction</div>
-                                </div>
-                                <div className="bg-white rounde
