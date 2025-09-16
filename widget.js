@@ -468,4 +468,116 @@
 
         renderRewardScreen() {
             return `
-                <div class="bb-
+                <div class="bb-lumo excited">🐉</div>
+                <h2 style="margin: 15px 0; color: #333;">Great job! 🎉</h2>
+                
+                <div style="background: linear-gradient(45deg, #fff3cd, #ffeaa7); border-radius: 15px; padding: 20px; margin: 15px 0;">
+                    <div style="font-size: 48px; margin-bottom: 10px;">🏆</div>
+                    <h3 style="margin: 10px 0; color: #333;">Boredom Buster Complete!</h3>
+                    <p style="margin: 5px 0; color: #666;">You earned 10 Lumo coins!</p>
+                </div>
+                
+                <div class="bb-stats">
+                    <div class="bb-stat">
+                        <div class="bb-stat-icon" style="font-size: 32px;">🔥</div>
+                        <div style="font-weight: bold; color: #ff9800;">${this.streak}</div>
+                        <div class="bb-stat-label">Streak</div>
+                    </div>
+                    <div class="bb-stat">
+                        <div class="bb-stat-icon" style="font-size: 32px;">🪙</div>
+                        <div style="font-weight: bold; color: #ffc107;">${this.lumoCoins}</div>
+                        <div class="bb-stat-label">Total Coins</div>
+                    </div>
+                </div>
+                
+                <button class="bb-button" onclick="window.bbWidget.resetToSpin()">Try Another! 🎯</button>
+            `;
+        }
+
+        render() {
+            let content = '';
+            
+            switch (this.currentScreen) {
+                case 'spin':
+                    content = this.renderSpinScreen();
+                    break;
+                case 'activity':
+                    content = this.renderActivityScreen();
+                    break;
+                case 'reflection':
+                    content = this.renderReflectionScreen();
+                    break;
+                case 'reward':
+                    content = this.renderRewardScreen();
+                    break;
+            }
+            
+            this.container.innerHTML = `<div class="bb-widget">${content}</div>`;
+        }
+
+        // Reflection state management
+        setFeeling(feeling) {
+            this.selectedFeeling = feeling;
+            this.updateReflectionContinue();
+            
+            // Update button styles
+            const buttons = this.container.querySelectorAll('.bb-emoji-button');
+            buttons.forEach(btn => {
+                btn.classList.remove('selected');
+                if (btn.textContent === feeling) {
+                    btn.classList.add('selected');
+                }
+            });
+        }
+
+        setSnackCraving(stillWants) {
+            this.stillWantSnack = stillWants;
+            this.updateReflectionContinue();
+        }
+
+        updateReflectionContinue() {
+            if (this.selectedFeeling && this.stillWantSnack !== undefined) {
+                const continueBtn = document.getElementById('bb-reflection-continue');
+                if (continueBtn) {
+                    continueBtn.style.display = 'block';
+                }
+            }
+        }
+
+        submitReflection() {
+            this.handleReflection(this.selectedFeeling, this.stillWantSnack);
+            // Reset reflection state
+            this.selectedFeeling = null;
+            this.stillWantSnack = undefined;
+        }
+    }
+
+    // Auto-initialize widgets when DOM is ready
+    function initializeWidgets() {
+        const containers = document.querySelectorAll('[id^="boredom-busters"]');
+        containers.forEach(container => {
+            if (!container.dataset.initialized) {
+                const widget = new BoredomBustersWidget(container);
+                container.dataset.initialized = 'true';
+                
+                // Make widget globally accessible for event handlers
+                window.bbWidget = widget;
+            }
+        });
+    }
+
+    // Initialize when DOM is ready
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initializeWidgets);
+    } else {
+        initializeWidgets();
+    }
+
+    // Expose widget class globally
+    window.BoredomBustersWidget = BoredomBustersWidget;
+    window.BoredomBusters = {
+        init: initializeWidgets,
+        version: CONFIG.version
+    };
+
+})();
